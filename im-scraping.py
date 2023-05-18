@@ -2,8 +2,11 @@ import requests
 from bs4 import BeautifulSoup
 import notion_client
 
-url = "https://doctor2017.jumedicine.com/fourth-year/internal-medicine/"
-response = requests.get(url)
+URL = "https://doctor2017.jumedicine.com/fourth-year/internal-medicine/"
+PARENT_PAGE_ID = "<YOUR PAGE ID>"
+NOTION_AUTH_KEY = "<YOUR AUTH TOKEN>"
+
+response = requests.get(URL)
 
 soup = BeautifulSoup(response.content, "lxml")
 
@@ -30,12 +33,10 @@ for parent_item in data[4:-3]:
         daughter_item["category"] = parent_item["header"]
         output.append(daughter_item)
 
-notion = notion_client.Client(auth="<YOUR AUTH TOKEN>")
-
-parent_page_id = "<YOUR PAGE ID>"
+notion = notion_client.Client(auth=NOTION_AUTH_KEY)
 
 database = notion.databases.create(
-    parent={"type": "page_id", "page_id": parent_page_id},
+    parent={"type": "page_id", "page_id": PARENT_PAGE_ID},
     title=[{"type": "text", "text": {"content": "My Database 4"}}],
     properties={
         "No.": {"number": {}},
